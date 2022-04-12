@@ -1,4 +1,4 @@
-#!bin/sh
+#!/bin/bash
 
 version=`grep -oE "\"version\": \"1\.[0-9]{1,3}\"" manifest.json`
 regex='\.([0-9]{1,3})"$'
