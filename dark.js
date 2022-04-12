@@ -18,6 +18,7 @@ function onload() {
 
 function init() {
   const disabled = JSON.parse(localStorage.getItem('disabled') || 'false')
+  if (typeof browser === 'undefined') browser = chrome
   browser.runtime.sendMessage({ disabled })
   onload()
   const body = document.getElementsByTagName('body')[0]
