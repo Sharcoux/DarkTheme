@@ -1,9 +1,10 @@
 let disabled = false;
 if (typeof browser === 'undefined') browser = chrome
+if (typeof browser.scripting === 'undefined') browser.scripting = browser.tabs
 browser.browserAction.onClicked.addListener(tab => {
   disabled = !disabled
   browser.browserAction.setIcon({ path: disabled ? '/light.png' : '/dark.png' });
-  return browser.tabs.executeScript(tab.id, {
+  return browser.scripting.executeScript(tab.id, {
     code: 'window.toggle();',
     allFrames: true,
   })
