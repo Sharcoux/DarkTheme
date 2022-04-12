@@ -21,11 +21,13 @@ function init() {
   if (typeof browser === 'undefined') browser = chrome
   browser.runtime.sendMessage({ disabled })
   onload()
-  const body = document.getElementsByTagName('body')[0]
-  body.style.setProperty('background-color', '#202020', 'important')
-  body.style.setProperty('color', '#F0F0F0', 'important')
-  const bodyObserver = new MutationObserver(onload);
-  bodyObserver.observe(body, { childList: true, subtree: true })
+  if (!disabled) {
+    const body = document.getElementsByTagName('body')[0]
+    body.style.setProperty('background-color', '#202020', 'important')
+    body.style.setProperty('color', '#F0F0F0', 'important')
+    const bodyObserver = new MutationObserver(onload);
+    bodyObserver.observe(body, { childList: true, subtree: true })
+  }
 }
 
 
