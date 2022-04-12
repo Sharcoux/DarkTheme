@@ -7,14 +7,12 @@
     "48": "dark.png"
   },
   "background": {
-    "scripts": [
-      "button.js"
-    ]
+    "service_worker": "button.js"
   },
   "permissions": [
     "activeTab"
   ],
-  "browser_action": {
+  "action": {
     "default_icon": "dark.png",
     "default_title": "DarkTheme"
   },

@@ -1,3 +1,10 @@
+// Compatibility fix
+try {
+  if (typeof browser === 'undefined') browser = chrome
+} catch (e) {
+  browser = chrome
+}
+
 let treatedNodes = []
 function onload() {
   const disabled = JSON.parse(localStorage.getItem('disabled') || 'false')
@@ -16,26 +23,24 @@ function onload() {
   treatedNodes = nodes
 }
 
+browser.runtime.onMessage.addListener((disabled, sender, send) => {
+  localStorage.setItem('disabled', disabled)
+  if (disabled) setTimeout(() => window.location.reload(), 0)
+  else onload()
+  send('done')
+})
+
 function init() {
   const disabled = JSON.parse(localStorage.getItem('disabled') || 'false')
   if (typeof browser === 'undefined') browser = chrome
   browser.runtime.sendMessage({ disabled })
+  if (disabled) return
   onload()
-  if (!disabled) {
-    const body = document.getElementsByTagName('body')[0]
-    body.style.setProperty('background-color', '#202020', 'important')
-    body.style.setProperty('color', '#F0F0F0', 'important')
-    const bodyObserver = new MutationObserver(onload);
-    bodyObserver.observe(body, { childList: true, subtree: true })
-  }
-}
-
-
-window.toggle = () => {
-  const disabled = !JSON.parse(localStorage.getItem('disabled') || 'false')
-  localStorage.setItem('disabled', disabled)
-  if (disabled) window.location.reload()
-  else onload()
+  const body = document.getElementsByTagName('body')[0]
+  body.style.setProperty('background-color', '#202020', 'important')
+  body.style.setProperty('color', '#F0F0F0', 'important')
+  const bodyObserver = new MutationObserver(onload);
+  bodyObserver.observe(body, { childList: true, subtree: true })
 }
 
 onload()

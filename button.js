@@ -1,17 +1,21 @@
-let disabled = false;
-if (typeof browser === 'undefined') browser = chrome
-if (typeof browser.scripting === 'undefined') browser.scripting = browser.tabs
-browser.browserAction.onClicked.addListener(tab => {
+// Compatibility fix
+try {
+  if (typeof browser === 'undefined') browser = chrome
+} catch (e) {
+  browser = chrome
+}
+if (typeof browser.action === 'undefined') browser.action = browser.browserAction
+
+let disabled = false
+browser.action.onClicked.addListener(tab => {
   disabled = !disabled
-  browser.browserAction.setIcon({ path: disabled ? '/light.png' : '/dark.png' });
-  return browser.scripting.executeScript(tab.id, {
-    code: 'window.toggle();',
-    allFrames: true,
-  })
+  browser.action.setIcon({ path: disabled ? '/light.png' : '/dark.png' });
+  browser.tabs.sendMessage(tab.id, disabled)
 });
-browser.runtime.onMessage.addListener(request => {
+browser.runtime.onMessage.addListener((request, sender, send) => {
   if (request.disabled !== disabled) {
     disabled = request.disabled
-    browser.browserAction.setIcon({ path: disabled ? '/light.png' : '/dark.png' });
+    browser.action.setIcon({ path: disabled ? '/light.png' : '/dark.png' });
   }
+  send('done')
 })
